@@ -1,8 +1,8 @@
 # Lauren's YouTube Video Summarizer & Q&A
 
-![App Screenshot](yt_video.png)
+![App Screenshot](public/yt_video.png)
 
-An AI-powered web application that allows users to summarize YouTube videos and ask questions about their content using advanced language models.
+An AI-powered web application that allows users to summarize YouTube videos and ask questions about their content using advanced language models. **Fully deployable on Vercel** with optimized transcript extraction.
 
 ## Features
 
@@ -11,16 +11,30 @@ An AI-powered web application that allows users to summarize YouTube videos and 
 - **Multi-language Support**: Choose between English and Chinese for summaries
 - **Multiple AI Models**: Select from various AI models including Amazon Nova Lite, Arcee Trinity Mini, and Kat Coder Pro
 - **Free to Use**: No credit card or email required
-- **Responsive Design**: Modern, mobile-friendly interface with dark theme
+- **Responsive Design**: Modern, mobile-friendly interface optimized for desktop, tablet, and mobile
+- **Vercel-Compatible**: Uses LangChain's YoutubeLoader for reliable transcript extraction in serverless environments
 
 ## Tech Stack
 
 - **Frontend**: Next.js 16, React 19, TypeScript
 - **Styling**: Tailwind CSS 4
 - **AI Integration**: OpenRouter API (access to multiple AI models)
-- **Transcript Extraction**: YouTube Transcript API
-- **UI Components**: Shadcn UI
-- **Language Processing**: LangChain
+- **Transcript Extraction**: LangChain's YoutubeLoader (`@langchain/community`)
+- **Language Processing**: LangChain with OpenAI integration
+- **Icons**: Lucide React
+- **Deployment**: Vercel-optimized
+
+## Why LangChain YoutubeLoader?
+
+This project uses **LangChain's YoutubeLoader** for transcript extraction because:
+
+- ✅ **Works reliably on Vercel** - Compatible with serverless environments
+- ✅ **No YouTube API scraping issues** - Uses stable APIs that aren't blocked
+- ✅ **Consistent performance** - Works the same locally and in production
+- ⚠️ **Other libraries** like `youtube-transcript-plus` and `youtubei.js` may fail on Vercel due to:
+  - Request blocking from Google's video endpoints
+  - Serverless environment incompatibilities
+  - Cookie and session management issues
 
 ## Prerequisites
 
@@ -32,17 +46,17 @@ An AI-powered web application that allows users to summarize YouTube videos and 
 
 1. Clone the repository:
 ```bash
-git clone https://github.com/yuqiao1205/youtube_video_summarizer_qa?tab=readme-ov-file
+git clone https://github.com/yuqiao1205/youtube_video_summarizer_qa
 cd youtube_video_summarizer_qa
 ```
 
-2. Install dependencies:
+2. Install dependencies with legacy peer deps flag (required for LangChain packages):
 ```bash
-npm install
+npm install --legacy-peer-deps
 # or
 yarn install
 # or
-pnpm install
+pnpm install --legacy-peer-deps
 # or
 bun install
 ```
@@ -81,16 +95,92 @@ bun dev
 
 ## How It Works
 
-1. **Transcript Extraction**: The app fetches the video transcript using YouTube's API
-2. **AI Processing**: Uses selected AI models via OpenRouter to process the transcript
+1. **Transcript Extraction**: Uses LangChain's YoutubeLoader to fetch video transcripts
+   - Extracts video ID from YouTube URL
+   - Fetches transcript using Vercel-compatible methods
+   - Returns clean, formatted text content
+
+2. **AI Processing**: Selected AI models via OpenRouter process the transcript
+   - Supports multiple language models
+   - Context-aware processing
+
 3. **Summarization**: Generates structured summaries with key points
-4. **Q&A**: Provides context-aware answers to user questions based on the video content
+   - Language selection (English/Chinese)
+   - Bullet-point format with highlights
+
+4. **Q&A**: Provides context-aware answers to user questions based on video content
+   - Uses transcript as context
+   - Model generates relevant answers
+
+## Deployment on Vercel
+
+This application is optimized for Vercel deployment:
+
+1. **Connect your repository** to Vercel
+2. **Add environment variable**:
+   - `OPENROUTER_API_KEY`: Your OpenRouter API key
+
+3. **Deploy**:
+   - Vercel will automatically detect Next.js
+   - Uses the `vercel.json` configuration for proper build settings
+   - Installs packages with `--legacy-peer-deps` flag
+
+### Vercel Configuration
+
+The project includes a `vercel.json` file with:
+```json
+{
+  "installCommand": "npm install --legacy-peer-deps"
+}
+```
+
+This ensures all LangChain dependencies are installed correctly.
 
 ## Building for Production
 
 ```bash
 npm run build
 npm start
+```
+
+Or deploy directly to Vercel:
+```bash
+npm install -g vercel
+vercel --prod
+```
+
+## Troubleshooting
+
+### Transcript Extraction Issues
+
+If you encounter transcript extraction errors:
+
+1. **Verify the video has captions** - Not all videos have transcripts
+2. **Check YouTube URL format** - Should be `https://www.youtube.com/watch?v=VIDEO_ID`
+3. **LangChain dependencies** - Ensure `@langchain/core` and `@langchain/community` are installed
+
+### Vercel Deployment Issues
+
+1. **Missing environment variables** - Add `OPENROUTER_API_KEY` in Vercel dashboard
+2. **Build failures** - Ensure `--legacy-peer-deps` is set in install command
+3. **Runtime errors** - Check Vercel function logs for details
+
+## Project Structure
+
+```
+youtube_video_summarizer_qa/
+├── src/
+│   ├── app/
+│   │   ├── page.tsx          # Main UI component
+│   │   ├── layout.tsx         # Root layout
+│   │   └── globals.css        # Global styles
+│   └── lib/
+│       ├── transcript.ts      # LangChain YoutubeLoader integration
+│       ├── summarize.ts       # AI summarization logic
+│       └── qa.ts             # Q&A functionality
+├── public/                    # Static assets
+├── vercel.json               # Vercel configuration
+└── package.json              # Dependencies
 ```
 
 ## Contributing
@@ -100,3 +190,7 @@ Contributions are welcome! Please feel free to submit a Pull Request.
 ## License
 
 This project is private and proprietary.
+
+## Credits
+
+Built with ❤️ using Next.js, LangChain, and OpenRouter AI
