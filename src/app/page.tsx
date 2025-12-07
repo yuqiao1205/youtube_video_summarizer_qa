@@ -61,31 +61,33 @@ export default function Home() {
 
   return (
     <div className="min-h-screen bg-gradient-to-b from-slate-900 to-purple-900 text-white">
-      <div className="container mx-auto px-4 py-8">
-        <header className="flex justify-between items-center mb-12">
-          <div className="flex items-center gap-3">
-            <Youtube className="w-12 h-12 text-red-500" />
-            <h1 className="text-4xl font-bold bg-gradient-to-r from-blue-300 to-purple-300 bg-clip-text text-transparent">
-              Lauren's YouTube Video Summarizer & Q&A
-            </h1>
-          </div>
-          <div className="flex items-center gap-2">
-            <label htmlFor="model" className="text-sm font-medium">Model:</label>
-            <select
-              id="model"
-              value={model}
-              onChange={(e) => setModel(e.target.value)}
-              className="bg-white/20 border border-white/30 rounded-lg text-white px-3 py-1 focus:outline-none focus:ring-2 focus:ring-blue-500"
-            >
-              <option value="amazon/nova-2-lite-v1:free">Amazon Nova Lite</option>
-              <option value="arcee-ai/trinity-mini:free">Arcee Trinity Mini</option>
-              <option value="kwaipilot/kat-coder-pro:free">Kat Coder Pro</option>
-            </select>
+      <div className="container mx-auto px-4 py-4 sm:py-8">
+        <header className="mb-8 sm:mb-12">
+          <div className="flex flex-col sm:flex-row sm:justify-between sm:items-center gap-4">
+            <div className="flex items-center gap-3">
+              <Youtube className="w-8 h-8 sm:w-12 sm:h-12 text-red-500 flex-shrink-0" />
+              <h1 className="text-2xl sm:text-3xl lg:text-4xl font-bold bg-gradient-to-r from-blue-300 to-purple-300 bg-clip-text text-transparent">
+                Lauren's YouTube Video Summarizer & Q&A
+              </h1>
+            </div>
+            <div className="flex items-center gap-2 w-full sm:w-auto">
+              <label htmlFor="model" className="text-sm font-medium whitespace-nowrap">Model:</label>
+              <select
+                id="model"
+                value={model}
+                onChange={(e) => setModel(e.target.value)}
+                className="flex-1 sm:flex-none bg-white/20 border border-white/30 rounded-lg text-white px-3 py-2.5 sm:py-2 text-base sm:text-sm focus:outline-none focus:ring-2 focus:ring-blue-500 min-h-[44px] sm:min-h-0"
+              >
+                <option value="amazon/nova-2-lite-v1:free" className="bg-slate-800">Amazon Nova Lite</option>
+                <option value="arcee-ai/trinity-mini:free" className="bg-slate-800">Arcee Trinity Mini</option>
+                <option value="kwaipilot/kat-coder-pro:free" className="bg-slate-800">Kat Coder Pro</option>
+              </select>
+            </div>
           </div>
         </header>
 
         <div className="max-w-4xl mx-auto">
-          <div className="bg-white/10 backdrop-blur-lg rounded-2xl p-8 mb-8 shadow-2xl border border-white/20">
+          <div className="bg-white/10 backdrop-blur-lg rounded-2xl p-4 sm:p-6 lg:p-8 mb-6 sm:mb-8 shadow-2xl border border-white/20">
             <label htmlFor="url" className="block text-lg font-semibold mb-3">
               YouTube Video URL
             </label>
@@ -105,9 +107,9 @@ export default function Home() {
             </div>
           )}
 
-          <div className="grid md:grid-cols-3 gap-8">
+          <div className="grid md:grid-cols-3 gap-6 sm:gap-8">
             {/* Summary Section */}
-            <div className="md:col-span-2 bg-white/10 backdrop-blur-lg rounded-2xl p-6 shadow-2xl border border-white/20">
+            <div className="md:col-span-2 bg-white/10 backdrop-blur-lg rounded-2xl p-4 sm:p-6 shadow-2xl border border-white/20">
               <div className="flex items-center gap-2 mb-4">
                 <Play className="w-6 h-6 text-green-400" />
                 <h2 className="text-2xl font-bold">Video Summary</h2>
@@ -140,7 +142,7 @@ export default function Home() {
               <button
                 onClick={handleSummarize}
                 disabled={loadingSummary}
-                className="w-full bg-gradient-to-r from-green-500 to-blue-500 hover:from-green-600 hover:to-blue-600 disabled:opacity-50 disabled:cursor-not-allowed text-white font-semibold py-3 px-6 rounded-lg transition-all duration-200 flex items-center justify-center gap-2 mb-4"
+                className="w-full bg-gradient-to-r from-green-500 to-blue-500 hover:from-green-600 hover:to-blue-600 disabled:opacity-50 disabled:cursor-not-allowed text-white font-semibold py-3 px-6 rounded-lg transition-all duration-200 flex items-center justify-center gap-2 mb-4 min-h-[44px]"
               >
                 {loadingSummary ? (
                   <>
@@ -152,7 +154,7 @@ export default function Home() {
                 )}
               </button>
               {summary && (
-                <div className="bg-white/5 rounded-lg p-4 h-[600px] overflow-y-auto">
+                <div className="bg-white/5 rounded-lg p-3 sm:p-4 h-[400px] sm:h-[500px] lg:h-[600px] overflow-y-auto">
                   <div
                     className="text-gray-200 leading-relaxed whitespace-pre-line"
                     dangerouslySetInnerHTML={{
@@ -165,7 +167,7 @@ export default function Home() {
             </div>
 
             {/* Q&A Section */}
-            <div className="md:col-span-1 bg-white/10 backdrop-blur-lg rounded-2xl p-6 shadow-2xl border border-white/20">
+            <div className="md:col-span-1 bg-white/10 backdrop-blur-lg rounded-2xl p-4 sm:p-6 shadow-2xl border border-white/20">
               <div className="flex items-center gap-2 mb-4">
                 <MessageSquare className="w-6 h-6 text-purple-400" />
                 <h2 className="text-2xl font-bold">Ask Questions About the Video</h2>
@@ -180,7 +182,7 @@ export default function Home() {
               <button
                 onClick={handleAskQuestion}
                 disabled={loadingAnswer}
-                className="w-full bg-gradient-to-r from-purple-500 to-pink-500 hover:from-purple-600 hover:to-pink-600 disabled:opacity-50 disabled:cursor-not-allowed text-white font-semibold py-3 px-6 rounded-lg transition-all duration-200 flex items-center justify-center gap-2 mb-4"
+                className="w-full bg-gradient-to-r from-purple-500 to-pink-500 hover:from-purple-600 hover:to-pink-600 disabled:opacity-50 disabled:cursor-not-allowed text-white font-semibold py-3 px-6 rounded-lg transition-all duration-200 flex items-center justify-center gap-2 mb-4 min-h-[44px]"
               >
                 {loadingAnswer ? (
                   <>
