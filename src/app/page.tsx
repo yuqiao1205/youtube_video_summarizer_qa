@@ -143,6 +143,15 @@ export default function Home() {
               placeholder="https://www.youtube.com/watch?v=..."
               className="w-full px-4 py-3 bg-white/20 border border-white/30 rounded-lg text-white placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent"
             />
+            <div className="mt-3 bg-blue-500/20 border border-blue-400/50 rounded-lg p-3 flex items-start gap-2">
+              <svg className="w-5 h-5 text-blue-300 flex-shrink-0 mt-0.5" fill="currentColor" viewBox="0 0 20 20">
+                <path fillRule="evenodd" d="M18 10a8 8 0 11-16 0 8 8 0 0116 0zm-7-4a1 1 0 11-2 0 1 1 0 012 0zM9 9a1 1 0 000 2v3a1 1 0 001 1h1a1 1 0 100-2v-3a1 1 0 00-1-1H9z" clipRule="evenodd" />
+              </svg>
+              <div className="text-sm text-blue-200">
+                <p className="font-semibold mb-1 text-yellow-300">Important: Video Must Have Transcript</p>
+                <p>This tool only works with YouTube videos that have <span className="font-semibold text-blue-100">subtitles/transcripts enabled</span>. Please ensure the video you're using has captions available.</p>
+              </div>
+            </div>
           </div>
 
           {error && (
