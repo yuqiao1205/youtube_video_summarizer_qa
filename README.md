@@ -32,8 +32,8 @@ An AI-powered web application that allows users to summarize YouTube videos and 
 
 1. Clone the repository:
 ```bash
-git clone <repository-url>
-cd youtube_videosummary
+git clone https://github.com/yuqiao1205/youtube_video_summarizer_qa?tab=readme-ov-file
+cd youtube_video_summarizer_qa
 ```
 
 2. Install dependencies:
