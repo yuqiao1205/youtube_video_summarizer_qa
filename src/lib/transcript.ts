@@ -31,25 +31,43 @@ export async function getTranscript(url: string): Promise<string> {
       throw new Error('No captions available');
     }
     
-    // Try to get transcript
-    const transcriptData = await info.getTranscript();
+    // Get the first caption track (usually English or auto-generated)
+    const captionTrack = captionTracks[0];
     
-    if (!transcriptData?.transcript?.content?.body?.initial_segments) {
-      throw new Error('Could not fetch transcript');
+    // Fetch the transcript from the caption URL
+    const captionUrl = captionTrack.base_url;
+    if (!captionUrl) {
+      throw new Error('No caption URL found');
     }
     
-    const segments = transcriptData.transcript.content.body.initial_segments;
+    const response = await fetch(captionUrl);
+    if (!response.ok) {
+      throw new Error(`Failed to fetch captions: ${response.statusText}`);
+    }
     
-    return segments
-      .map((segment: any) => {
-        const runs = segment?.snippet?.runs;
-        if (!runs || !Array.isArray(runs) || runs.length === 0) {
-          return '';
-        }
-        return runs.map((run: any) => run.text || '').join('');
+    const xmlText = await response.text();
+    
+    // Parse XML to extract text
+    const textMatches = xmlText.match(/<text[^>]*>([^<]+)<\/text>/g) || [];
+    const transcript = textMatches
+      .map(match => {
+        const text = match.replace(/<text[^>]*>/, '').replace(/<\/text>/, '');
+        // Decode HTML entities
+        return text
+          .replace(/&amp;/g, '&')
+          .replace(/&lt;/g, '<')
+          .replace(/&gt;/g, '>')
+          .replace(/&quot;/g, '"')
+          .replace(/&#39;/g, "'")
+          .replace(/&nbsp;/g, ' ');
       })
-      .filter((text: string) => text.length > 0)
       .join('\n');
+    
+    if (!transcript) {
+      throw new Error('No transcript text found');
+    }
+    
+    return transcript;
   } catch (error: any) {
     console.error('Error fetching transcript:', error);
     throw new Error(`Failed to fetch transcript: ${error.message}`);
