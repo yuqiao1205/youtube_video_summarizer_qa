@@ -1,0 +1,269 @@
+'use client';
+
+import { useState } from 'react';
+import { Play, MessageSquare, Loader2, Youtube } from 'lucide-react';
+import { getTranscript } from '../lib/transcript';
+import { summarizeTranscript } from '../lib/summarize';
+import { answerQuestion } from '../lib/qa';
+
+export default function Home() {
+  const [url, setUrl] = useState('');
+  const [summary, setSummary] = useState('');
+  const [question, setQuestion] = useState('');
+  const [answer, setAnswer] = useState('');
+  const [loadingSummary, setLoadingSummary] = useState(false);
+  const [loadingAnswer, setLoadingAnswer] = useState(false);
+  const [error, setError] = useState('');
+  const [language, setLanguage] = useState('english');
+  const [model, setModel] = useState('amazon/nova-2-lite-v1:free');
+
+  const modelDisplayNames: { [key: string]: string } = {
+    'amazon/nova-2-lite-v1:free': 'Amazon Nova Lite',
+    'arcee-ai/trinity-mini:free': 'Arcee Trinity Mini',
+    'kwaipilot/kat-coder-pro:free': 'Kat Coder Pro',
+  };
+
+  const handleSummarize = async () => {
+    if (!url) {
+      setError('Please enter a YouTube URL');
+      return;
+    }
+    setError('');
+    setLoadingSummary(true);
+    try {
+      const transcript = await getTranscript(url);
+      const sum = await summarizeTranscript(transcript, language, model);
+      setSummary(sum);
+    } catch (err) {
+      setError(err instanceof Error ? err.message : 'An error occurred');
+    } finally {
+      setLoadingSummary(false);
+    }
+  };
+
+  const handleAskQuestion = async () => {
+    if (!url || !question) {
+      setError('Please enter a YouTube URL and question');
+      return;
+    }
+    setError('');
+    setLoadingAnswer(true);
+    try {
+      const transcript = await getTranscript(url);
+      const ans = await answerQuestion(transcript, question, model);
+      setAnswer(ans);
+    } catch (err) {
+      setError(err instanceof Error ? err.message : 'An error occurred');
+    } finally {
+      setLoadingAnswer(false);
+    }
+  };
+
+  return (
+    <div className="min-h-screen bg-gradient-to-b from-slate-900 to-purple-900 text-white">
+      <div className="container mx-auto px-4 py-8">
+        <header className="flex justify-between items-center mb-12">
+          <div className="flex items-center gap-3">
+            <Youtube className="w-12 h-12 text-red-500" />
+            <h1 className="text-4xl font-bold bg-gradient-to-r from-blue-300 to-purple-300 bg-clip-text text-transparent">
+              Lauren's YouTube Video Summarizer & Q&A
+            </h1>
+          </div>
+          <div className="flex items-center gap-2">
+            <label htmlFor="model" className="text-sm font-medium">Model:</label>
+            <select
+              id="model"
+              value={model}
+              onChange={(e) => setModel(e.target.value)}
+              className="bg-white/20 border border-white/30 rounded-lg text-white px-3 py-1 focus:outline-none focus:ring-2 focus:ring-blue-500"
+            >
+              <option value="amazon/nova-2-lite-v1:free">Amazon Nova Lite</option>
+              <option value="arcee-ai/trinity-mini:free">Arcee Trinity Mini</option>
+              <option value="kwaipilot/kat-coder-pro:free">Kat Coder Pro</option>
+            </select>
+          </div>
+        </header>
+
+        <div className="max-w-4xl mx-auto">
+          <div className="bg-white/10 backdrop-blur-lg rounded-2xl p-8 mb-8 shadow-2xl border border-white/20">
+            <label htmlFor="url" className="block text-lg font-semibold mb-3">
+              YouTube Video URL
+            </label>
+            <input
+              id="url"
+              type="url"
+              value={url}
+              onChange={(e) => setUrl(e.target.value)}
+              placeholder="https://www.youtube.com/watch?v=..."
+              className="w-full px-4 py-3 bg-white/20 border border-white/30 rounded-lg text-white placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+            />
+          </div>
+
+          {error && (
+            <div className="bg-red-500/20 border border-red-500/50 rounded-lg p-4 mb-6 text-red-300">
+              {error}
+            </div>
+          )}
+
+          <div className="grid md:grid-cols-3 gap-8">
+            {/* Summary Section */}
+            <div className="md:col-span-2 bg-white/10 backdrop-blur-lg rounded-2xl p-6 shadow-2xl border border-white/20">
+              <div className="flex items-center gap-2 mb-4">
+                <Play className="w-6 h-6 text-green-400" />
+                <h2 className="text-2xl font-bold">Video Summary</h2>
+              </div>
+              <div className="mb-4">
+                <label className="block text-sm font-medium mb-2">Summary Language</label>
+                <div className="flex gap-4">
+                  <label className="flex items-center">
+                    <input
+                      type="radio"
+                      value="english"
+                      checked={language === 'english'}
+                      onChange={(e) => setLanguage(e.target.value)}
+                      className="mr-2"
+                    />
+                    English
+                  </label>
+                  <label className="flex items-center">
+                    <input
+                      type="radio"
+                      value="chinese"
+                      checked={language === 'chinese'}
+                      onChange={(e) => setLanguage(e.target.value)}
+                      className="mr-2"
+                    />
+                    Chinese
+                  </label>
+                </div>
+              </div>
+              <button
+                onClick={handleSummarize}
+                disabled={loadingSummary}
+                className="w-full bg-gradient-to-r from-green-500 to-blue-500 hover:from-green-600 hover:to-blue-600 disabled:opacity-50 disabled:cursor-not-allowed text-white font-semibold py-3 px-6 rounded-lg transition-all duration-200 flex items-center justify-center gap-2 mb-4"
+              >
+                {loadingSummary ? (
+                  <>
+                    <Loader2 className="w-5 h-5 animate-spin" />
+                    Generating Summary...
+                  </>
+                ) : (
+                  'Summarize Video'
+                )}
+              </button>
+              {summary && (
+                <div className="bg-white/5 rounded-lg p-4 h-[600px] overflow-y-auto">
+                  <div
+                    className="text-gray-200 leading-relaxed whitespace-pre-line"
+                    dangerouslySetInnerHTML={{
+                      __html: summary.replace(/\*\*(.*?)\*\*/g, '<strong class="text-white">$1</strong>')
+                    }}
+                  />
+                  <p className="text-sm text-gray-400 mt-2">Generated by: {modelDisplayNames[model]}</p>
+                </div>
+              )}
+            </div>
+
+            {/* Q&A Section */}
+            <div className="md:col-span-1 bg-white/10 backdrop-blur-lg rounded-2xl p-6 shadow-2xl border border-white/20">
+              <div className="flex items-center gap-2 mb-4">
+                <MessageSquare className="w-6 h-6 text-purple-400" />
+                <h2 className="text-2xl font-bold">Ask Questions About the Video</h2>
+              </div>
+              <textarea
+                value={question}
+                onChange={(e) => setQuestion(e.target.value)}
+                placeholder="Ask a question about the video..."
+                rows={3}
+                className="w-full px-4 py-3 bg-white/20 border border-white/30 rounded-lg text-white placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-purple-500 focus:border-transparent mb-4 resize-none"
+              />
+              <button
+                onClick={handleAskQuestion}
+                disabled={loadingAnswer}
+                className="w-full bg-gradient-to-r from-purple-500 to-pink-500 hover:from-purple-600 hover:to-pink-600 disabled:opacity-50 disabled:cursor-not-allowed text-white font-semibold py-3 px-6 rounded-lg transition-all duration-200 flex items-center justify-center gap-2 mb-4"
+              >
+                {loadingAnswer ? (
+                  <>
+                    <Loader2 className="w-5 h-5 animate-spin" />
+                    Getting Answer...
+                  </>
+                ) : (
+                  'Ask Question'
+                )}
+              </button>
+              {answer && (
+                <div className="bg-white/5 rounded-lg p-4 max-h-96 overflow-y-auto">
+                  <p className="text-gray-200 leading-relaxed">{answer}</p>
+                  <p className="text-sm text-gray-400 mt-2">Generated by: {modelDisplayNames[model]}</p>
+                </div>
+              )}
+            </div>
+          </div>
+  
+          <div className="text-center mb-12">
+            <h2 className="text-3xl font-bold mb-4 mt-16 bg-gradient-to-r from-blue-400 to-purple-400 bg-clip-text text-transparent">How to summarize a YouTube video?</h2>
+            <p className="text-xl mb-8 text-gray-300">With 3 simple steps use AI to summarize YouTube videos.</p>
+            <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
+              <div className="bg-gradient-to-br from-blue-900/60 to-cyan-900/60 backdrop-blur-lg rounded-2xl p-6 shadow-2xl">
+                <div className="text-4xl font-bold text-blue-300 mb-2">1</div>
+                <h3 className="text-lg font-semibold mb-2 text-white">Copy YouTube Video URL</h3>
+                <p className="text-gray-200">Copy and paste the YouTube Video URL into Lauren's AI YouTube Summarizer.</p>
+              </div>
+              <div className="bg-gradient-to-br from-green-900/60 to-teal-900/60 backdrop-blur-lg rounded-2xl p-6 shadow-2xl">
+                <div className="text-4xl font-bold text-green-300 mb-2">2</div>
+                <h3 className="text-lg font-semibold mb-2 text-white">Generate the Summary</h3>
+                <p className="text-gray-200">Click the "Summarize video" button, and Lauren's AI will summarize the YouTube video.</p>
+              </div>
+              <div className="bg-gradient-to-br from-purple-900/60 to-pink-900/60 backdrop-blur-lg rounded-2xl p-6 shadow-2xl">
+                <div className="text-4xl font-bold text-purple-300 mb-2">3</div>
+                <h3 className="text-lg font-semibold mb-2 text-white">View the summary</h3>
+                <p className="text-gray-200">Instantly view the AI Generated YouTube video summary, without entering your email or credit card.</p>
+              </div>
+            </div>
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-6 mt-8">
+              <div className="bg-gradient-to-br from-indigo-900/60 to-blue-900/60 backdrop-blur-lg rounded-2xl p-6 shadow-2xl text-center">
+                <h3 className="text-xl font-semibold mb-2 text-white">Select Language</h3>
+                <p className="text-gray-200">Choose your preferred language for video summaries.</p>
+              </div>
+              <div className="bg-gradient-to-br from-red-900/60 to-orange-900/60 backdrop-blur-lg rounded-2xl p-6 shadow-2xl text-center">
+                <h3 className="text-xl font-semibold mb-2 text-white">Ask Questions</h3>
+                <p className="text-gray-200">Ask questions about the video content for detailed answers.</p>
+              </div>
+            </div>
+          </div>
+  
+          <footer className="mt-12 py-12 bg-gradient-to-r from-slate-800 to-purple-800 border-t border-white/20">
+            <div className="container mx-auto px-4">
+              <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
+                <div>
+                  <h3 className="text-xl font-bold mb-4 text-blue-400">Lauren's YouTube Summarizer</h3>
+                  <p className="text-gray-300">AI-powered tool to summarize YouTube videos and answer questions instantly.</p>
+                </div>
+                <div>
+                  <h3 className="text-lg font-semibold mb-4 text-green-400">Features</h3>
+                  <ul className="text-gray-300 space-y-2">
+                    <li>Video Summarization</li>
+                    <li>Q&A System</li>
+                    <li>Multi-language Support</li>
+                    <li>Free to Use</li>
+                  </ul>
+                </div>
+                <div>
+                  <h3 className="text-lg font-semibold mb-4 text-purple-400">Links</h3>
+                  <ul className="text-gray-300 space-y-2">
+                    <li><a href="#" className="hover:text-white">Privacy Policy</a></li>
+                    <li><a href="#" className="hover:text-white">Terms of Service</a></li>
+                    <li><a href="#" className="hover:text-white">Contact</a></li>
+                  </ul>
+                </div>
+              </div>
+              <div className="mt-8 pt-8 border-t border-white/10 text-center text-gray-400">
+                <p>&copy; 2025 Lauren's YouTube Video Summarizer. All rights reserved.</p>
+              </div>
+            </div>
+          </footer>
+        </div>
+      </div>
+    </div>
+  );
+}
