@@ -1,12 +1,15 @@
 'use client';
 
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
+import { useSearchParams } from 'next/navigation';
 import { Play, MessageSquare, Loader2, Youtube, Download, Copy, Check } from 'lucide-react';
 import { getTranscript } from '../lib/transcript';
 import { summarizeTranscript } from '../lib/summarize';
 import { answerQuestion } from '../lib/qa';
+import SearchBar from '../components/SearchBar';
 
 export default function Home() {
+  const searchParams = useSearchParams();
   const [url, setUrl] = useState('');
   const [summary, setSummary] = useState('');
   const [question, setQuestion] = useState('');
@@ -103,6 +106,18 @@ export default function Home() {
     }
   };
 
+  // Handle video URL from search results
+  useEffect(() => {
+    const videoUrl = searchParams.get('video');
+    if (videoUrl) {
+      setUrl(decodeURIComponent(videoUrl));
+      // Scroll to the URL input
+      setTimeout(() => {
+        document.getElementById('url')?.scrollIntoView({ behavior: 'smooth', block: 'center' });
+      }, 100);
+    }
+  }, [searchParams]);
+
   return (
     <div className="min-h-screen bg-gradient-to-b from-slate-900 to-purple-900 text-white">
       <div className="container mx-auto px-4 py-4 sm:py-8">
@@ -131,9 +146,20 @@ export default function Home() {
         </header>
 
         <div className="max-w-4xl mx-auto">
-          <div className="bg-white/10 backdrop-blur-lg rounded-2xl p-4 sm:p-6 lg:p-8 mb-6 sm:mb-8 shadow-2xl border border-white/20">
-            <label htmlFor="url" className="block text-lg font-semibold mb-3">
-              YouTube Video URL
+          {/* Search Section */}
+          <SearchBar />
+
+          {/* OR Divider */}
+          <div className="flex items-center gap-4 my-8">
+            <div className="flex-1 h-px bg-white/20"></div>
+            <span className="text-gray-400 font-semibold">OR</span>
+            <div className="flex-1 h-px bg-white/20"></div>
+          </div>
+
+          {/* URL Input Section */}
+          <div className="bg-white backdrop-blur-lg rounded-2xl p-4 sm:p-6 lg:p-8 mb-6 sm:mb-8 shadow-2xl border border-gray-200">
+            <label htmlFor="url" className="block text-lg font-semibold mb-3 text-gray-800">
+              Input YouTube Video URL Here:
             </label>
             <input
               id="url"
@@ -141,15 +167,15 @@ export default function Home() {
               value={url}
               onChange={(e) => setUrl(e.target.value)}
               placeholder="https://www.youtube.com/watch?v=..."
-              className="w-full px-4 py-3 bg-white/20 border border-white/30 rounded-lg text-white placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+              className="w-full px-4 py-3 bg-gray-50 border border-gray-300 rounded-lg text-gray-900 placeholder-gray-500 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent"
             />
-            <div className="mt-3 bg-blue-500/20 border border-blue-400/50 rounded-lg p-3 flex items-start gap-2">
-              <svg className="w-5 h-5 text-blue-300 flex-shrink-0 mt-0.5" fill="currentColor" viewBox="0 0 20 20">
+            <div className="mt-3 bg-yellow-50 border border-yellow-300 rounded-lg p-3 flex items-start gap-2">
+              <svg className="w-5 h-5 text-yellow-600 flex-shrink-0 mt-0.5" fill="currentColor" viewBox="0 0 20 20">
                 <path fillRule="evenodd" d="M18 10a8 8 0 11-16 0 8 8 0 0116 0zm-7-4a1 1 0 11-2 0 1 1 0 012 0zM9 9a1 1 0 000 2v3a1 1 0 001 1h1a1 1 0 100-2v-3a1 1 0 00-1-1H9z" clipRule="evenodd" />
               </svg>
-              <div className="text-sm text-blue-200">
-                <p className="font-semibold mb-1 text-yellow-300">Important: Video Must Have Transcript</p>
-                <p>This tool only works with YouTube videos that have <span className="font-semibold text-blue-100">subtitles/transcripts enabled</span>. Please ensure the video you're using has captions available.</p>
+              <div className="text-sm text-gray-700">
+                <p className="font-semibold mb-1 text-yellow-800">Important: Video Must Have Transcript</p>
+                <p>This tool only works with YouTube videos that have <span className="font-semibold text-gray-900">subtitles/transcripts enabled</span>. Please ensure the video you're using has captions available.</p>
               </div>
             </div>
           </div>
@@ -162,15 +188,15 @@ export default function Home() {
 
           <div className="grid md:grid-cols-3 gap-6 sm:gap-8">
             {/* Summary Section */}
-            <div className="md:col-span-2 bg-white/10 backdrop-blur-lg rounded-2xl p-4 sm:p-6 shadow-2xl border border-white/20">
+            <div className="md:col-span-2 bg-gradient-to-br from-blue-50 to-cyan-50 backdrop-blur-lg rounded-2xl p-4 sm:p-6 shadow-2xl border border-blue-200">
               <div className="flex items-center gap-2 mb-4">
-                <Play className="w-6 h-6 text-green-400" />
-                <h2 className="text-2xl font-bold">Video Summary</h2>
+                <Play className="w-6 h-6 text-blue-600" />
+                <h2 className="text-2xl font-bold text-blue-900">Video Summary</h2>
               </div>
               <div className="mb-4">
-                <label className="block text-sm font-medium mb-2">Summary Language</label>
-                <div className="flex gap-4">
-                  <label className="flex items-center">
+                <label className="block text-sm font-medium mb-2 text-blue-800">Summary Language</label>
+                <div className="flex gap-4 text-blue-900">
+                  <label className="flex items-center cursor-pointer">
                     <input
                       type="radio"
                       value="english"
@@ -180,7 +206,7 @@ export default function Home() {
                     />
                     English
                   </label>
-                  <label className="flex items-center">
+                  <label className="flex items-center cursor-pointer">
                     <input
                       type="radio"
                       value="chinese"
@@ -233,14 +259,14 @@ export default function Home() {
                       Download.txt
                     </button>
                   </div>
-                  <div className="bg-white/5 rounded-lg p-3 sm:p-4 h-[400px] sm:h-[500px] lg:h-[600px] overflow-y-auto">
+                  <div className="bg-white rounded-lg p-3 sm:p-4 h-[400px] sm:h-[500px] lg:h-[600px] overflow-y-auto border border-blue-200">
                     <div
-                      className="text-gray-200 leading-relaxed whitespace-pre-line"
+                      className="text-gray-700 leading-relaxed whitespace-pre-line"
                       dangerouslySetInnerHTML={{
-                        __html: summary.replace(/\*\*(.*?)\*\*/g, '<strong class="text-white">$1</strong>')
+                        __html: summary.replace(/\*\*(.*?)\*\*/g, '<strong class="text-blue-900">$1</strong>')
                       }}
                     />
-                    <p className="text-sm text-gray-400 mt-2">Generated by: {modelDisplayNames[model]}</p>
+                    <p className="text-sm text-blue-600 mt-2">Generated by: {modelDisplayNames[model]}</p>
                   </div>
                 </>
               )}
