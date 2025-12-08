@@ -1,12 +1,12 @@
 'use client';
 
-import { useState, useEffect } from 'react';
+import { useState, useEffect, Suspense } from 'react';
 import { useSearchParams, useRouter } from 'next/navigation';
 import { Youtube, Copy, Check, ArrowLeft, Loader2, ExternalLink } from 'lucide-react';
 import { searchVideosWithCaptions, VideoResult } from '@/lib/youtube-search';
 import SearchBar from '@/components/SearchBar';
 
-export default function SearchPage() {
+function SearchContent() {
   const searchParams = useSearchParams();
   const router = useRouter();
   const query = searchParams.get('q') || '';
@@ -196,5 +196,17 @@ export default function SearchPage() {
         )}
       </div>
     </div>
+  );
+}
+
+export default function SearchPage() {
+  return (
+    <Suspense fallback={
+      <div className="min-h-screen bg-gradient-to-br from-slate-900 via-blue-900 to-teal-900 text-white flex items-center justify-center">
+        <Loader2 className="w-12 h-12 animate-spin text-teal-400" />
+      </div>
+    }>
+      <SearchContent />
+    </Suspense>
   );
 }

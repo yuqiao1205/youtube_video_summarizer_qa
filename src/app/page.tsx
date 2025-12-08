@@ -1,6 +1,6 @@
 'use client';
 
-import { useState, useEffect } from 'react';
+import { useState, useEffect, Suspense } from 'react';
 import { useSearchParams } from 'next/navigation';
 import { Play, MessageSquare, Loader2, Youtube, Download, Copy, Check } from 'lucide-react';
 import { getTranscript } from '../lib/transcript';
@@ -8,7 +8,7 @@ import { summarizeTranscript } from '../lib/summarize';
 import { answerQuestion } from '../lib/qa';
 import SearchBar from '../components/SearchBar';
 
-export default function Home() {
+function HomeContent() {
   const searchParams = useSearchParams();
   const [url, setUrl] = useState('');
   const [summary, setSummary] = useState('');
@@ -65,24 +65,24 @@ export default function Home() {
 
   const handleDownloadSummary = () => {
     if (!summary) return;
-    
+
     // Remove HTML formatting for plain text
     const plainText = summary
       .replace(/<strong[^>]*>/g, '')
       .replace(/<\/strong>/g, '')
       .replace(/\*\*(.*?)\*\*/g, '$1');
-    
+
     // Create blob with text content
     const blob = new Blob([plainText], { type: 'text/plain;charset=utf-8' });
     const url = URL.createObjectURL(blob);
-    
+
     // Create download link
     const link = document.createElement('a');
     link.href = url;
     link.download = `youtube-summary-${Date.now()}.txt`;
     document.body.appendChild(link);
     link.click();
-    
+
     // Cleanup
     document.body.removeChild(link);
     URL.revokeObjectURL(url);
@@ -90,13 +90,13 @@ export default function Home() {
 
   const handleCopySummary = async () => {
     if (!summary) return;
-    
+
     // Remove HTML formatting for plain text
     const plainText = summary
       .replace(/<strong[^>]*>/g, '')
       .replace(/<\/strong>/g, '')
       .replace(/\*\*(.*?)\*\*/g, '$1');
-    
+
     try {
       await navigator.clipboard.writeText(plainText);
       setCopied(true);
@@ -309,7 +309,7 @@ export default function Home() {
               )}
             </div>
           </div>
-  
+
           <div className="text-center mb-12 animate-fade-in-up">
             <h2 className="text-3xl font-bold mb-4 mt-16 bg-gradient-to-r from-blue-400 to-teal-400 bg-clip-text text-transparent">How to summarize a YouTube video?</h2>
             <p className="text-xl mb-8 text-gray-300">With 3 simple steps use AI to summarize YouTube videos.</p>
@@ -353,7 +353,7 @@ export default function Home() {
               </div>
             </div>
           </div>
-  
+
           <footer className="mt-12 py-12 bg-gradient-to-r from-slate-800 to-teal-800 border-t border-white/20 animate-fade-in-up">
             <div className="container mx-auto px-4">
               <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
@@ -389,5 +389,17 @@ export default function Home() {
         </div>
       </div>
     </div>
+  );
+}
+
+export default function Home() {
+  return (
+    <Suspense fallback={
+      <div className="min-h-screen bg-gradient-to-br from-slate-900 via-blue-900 to-teal-900 text-white flex items-center justify-center">
+        <Loader2 className="w-8 h-8 animate-spin text-teal-400" />
+      </div>
+    }>
+      <HomeContent />
+    </Suspense>
   );
 }
