@@ -146,6 +146,45 @@ function HomeContent() {
         </header>
 
         <div className="max-w-4xl mx-auto">
+          {/* Hero Section */}
+          <div className="text-center mb-12 animate-fade-in-up">
+            <div className="inline-flex items-center gap-2 px-4 py-2 bg-teal-500/20 border border-teal-500/30 rounded-full mb-6">
+              <span className="relative flex h-3 w-3">
+                <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-teal-400 opacity-75"></span>
+                <span className="relative inline-flex rounded-full h-3 w-3 bg-teal-500"></span>
+              </span>
+              <span className="text-teal-300 text-sm font-medium">New Feature</span>
+            </div>
+            <h2 className="text-3xl sm:text-4xl lg:text-5xl font-bold mb-4">
+              <span className="bg-gradient-to-r from-white via-blue-100 to-teal-100 bg-clip-text text-transparent">
+                Search YouTube Videos with Transcripts
+              </span>
+            </h2>
+            <p className="text-lg sm:text-xl text-gray-300 mb-6 max-w-2xl mx-auto">
+              Find videos that have transcripts available and <span className="text-teal-400 font-semibold">use them directly</span> to generate AI summaries. No more wasting time on videos without captions!
+            </p>
+            <div className="flex flex-wrap justify-center gap-4 text-sm text-gray-400">
+              <div className="flex items-center gap-2">
+                <svg className="w-5 h-5 text-green-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M5 13l4 4L19 7" />
+                </svg>
+                <span>Auto-filter transcripts</span>
+              </div>
+              <div className="flex items-center gap-2">
+                <svg className="w-5 h-5 text-green-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M5 13l4 4L19 7" />
+                </svg>
+                <span>One-click summarize</span>
+              </div>
+              <div className="flex items-center gap-2">
+                <svg className="w-5 h-5 text-green-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M5 13l4 4L19 7" />
+                </svg>
+                <span>100% Free</span>
+              </div>
+            </div>
+          </div>
+
           {/* Search Section */}
           <div className="animate-fade-in-up">
             <SearchBar />
