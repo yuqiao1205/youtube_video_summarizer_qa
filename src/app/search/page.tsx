@@ -59,13 +59,13 @@ export default function SearchPage() {
   };
 
   return (
-    <div className="min-h-screen bg-gradient-to-b from-slate-900 to-purple-900 text-white">
+    <div className="min-h-screen bg-gradient-to-br from-slate-900 via-blue-900 to-teal-900 text-white">
       <div className="container mx-auto px-4 py-8">
         {/* Header */}
         <header className="mb-8">
           <div className="flex items-center gap-3 mb-6">
             <Youtube className="w-10 h-10 text-red-500" />
-            <h1 className="text-3xl font-bold bg-gradient-to-r from-blue-300 to-purple-300 bg-clip-text text-transparent">
+            <h1 className="text-3xl font-bold bg-gradient-to-r from-blue-300 to-teal-300 bg-clip-text text-transparent">
               Search Results with Transcripts
             </h1>
           </div>
