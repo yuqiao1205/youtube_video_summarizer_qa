@@ -157,8 +157,8 @@ export default function Home() {
           </div>
 
           {/* URL Input Section */}
-          <div className="bg-white backdrop-blur-lg rounded-2xl p-4 sm:p-6 lg:p-8 mb-6 sm:mb-8 shadow-2xl border border-gray-200">
-            <label htmlFor="url" className="block text-lg font-semibold mb-3 text-gray-800">
+          <div className="bg-gradient-to-br from-blue-50 to-cyan-50 backdrop-blur-lg rounded-2xl p-4 sm:p-6 lg:p-8 mb-6 sm:mb-8 shadow-2xl border border-blue-200">
+            <label htmlFor="url" className="block text-lg font-semibold mb-3 text-blue-900">
               Input YouTube Video URL Here:
             </label>
             <input

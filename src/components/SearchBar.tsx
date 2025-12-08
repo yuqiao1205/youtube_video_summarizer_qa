@@ -16,7 +16,7 @@ export default function SearchBar() {
   };
 
   return (
-    <div className="bg-white backdrop-blur-lg rounded-2xl p-4 sm:p-6 shadow-2xl border border-gray-200">
+    <div className="bg-gradient-to-br from-blue-50 to-cyan-50 backdrop-blur-lg rounded-2xl p-4 sm:p-6 shadow-2xl border border-blue-200">
       <div className="flex items-center gap-2 mb-3">
         <Search className="w-6 h-6 text-blue-600" />
         <h2 className="text-xl font-bold text-gray-800">Search Youtube Videos only with Transcripts/Captions Available</h2>
