@@ -2,7 +2,7 @@
 
 import OpenAI from "openai";
 
-const MODEL = 'amazon/nova-2-lite-v1:free'; // Grok fast 1
+const DEFAULT_MODEL = 'mistralai/devstral-2512:free';
 
 const openai = new OpenAI({
   apiKey: process.env.OPENROUTER_API_KEY,
@@ -33,7 +33,11 @@ const USER_PROMPT = `Please summarize the following YouTube video transcript:
 
 {transcript}`;
 
-export async function summarizeTranscript(transcript: string, language: string = 'english', model: string = 'amazon/nova-2-lite-v1:free'): Promise<string> {
+export async function summarizeTranscript(
+  transcript: string,
+  language: string = 'english',
+  model: string = DEFAULT_MODEL,
+): Promise<string> {
   if (!transcript) {
     throw new Error('Transcript is required');
   }

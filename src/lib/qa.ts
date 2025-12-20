@@ -2,7 +2,7 @@
 
 import OpenAI from "openai";
 
-const MODEL = 'amazon/nova-2-lite-v1:free';
+const DEFAULT_MODEL = 'mistralai/devstral-2512:free';
 
 const openai = new OpenAI({
   apiKey: process.env.OPENROUTER_API_KEY,
@@ -21,7 +21,11 @@ const QA_USER_PROMPT = `Relevant Video Context: {context}
 Based on the above context, please answer the following question:
 {question}`;
 
-export async function answerQuestion(transcript: string, question: string, model: string = 'amazon/nova-2-lite-v1:free'): Promise<string> {
+export async function answerQuestion(
+  transcript: string,
+  question: string,
+  model: string = DEFAULT_MODEL,
+): Promise<string> {
   if (!transcript || !question) {
     throw new Error('Transcript and question are required');
   }

@@ -17,27 +17,27 @@ function SearchContent() {
   const [copiedId, setCopiedId] = useState<string | null>(null);
 
   useEffect(() => {
-    if (query) {
-      performSearch();
-    }
-  }, [query]);
+    if (!query) return;
 
-  const performSearch = async () => {
-    setLoading(true);
-    setError('');
-    try {
-      const results = await searchVideosWithCaptions(query);
-      setVideos(results);
-      
-      if (results.length === 0) {
-        setError('No videos with transcripts found for your search. Try different keywords.');
+    const performSearch = async () => {
+      setLoading(true);
+      setError('');
+      try {
+        const results = await searchVideosWithCaptions(query);
+        setVideos(results);
+
+        if (results.length === 0) {
+          setError('No videos with transcripts found for your search. Try different keywords.');
+        }
+      } catch (err) {
+        setError(err instanceof Error ? err.message : 'An error occurred while searching');
+      } finally {
+        setLoading(false);
       }
-    } catch (err) {
-      setError(err instanceof Error ? err.message : 'An error occurred while searching');
-    } finally {
-      setLoading(false);
-    }
-  };
+    };
+
+    performSearch();
+  }, [query]);
 
   const handleCopyUrl = async (videoId: string, url: string) => {
     try {
@@ -86,10 +86,10 @@ function SearchContent() {
 
         {/* Search Query Display */}
         <div className="max-w-7xl mx-auto mb-6">
-          <div className="bg-white/10 backdrop-blur-lg rounded-xl p-4 border border-white/20">
+          <div className="bg-white rounded-2xl p-4 border border-gray-200 shadow-lg">
             <p className="text-lg">
-              <span className="text-gray-400">Searching for:</span>{' '}
-              <span className="font-semibold text-blue-300">&quot;{query}&quot;</span>
+              <span className="text-gray-600">Searching for:</span>{' '}
+              <span className="font-semibold text-blue-600">&quot;{query}&quot;</span>
             </p>
           </div>
         </div>
@@ -97,16 +97,16 @@ function SearchContent() {
         {/* Loading State */}
         {loading && (
           <div className="max-w-7xl mx-auto flex flex-col items-center justify-center py-12">
-            <Loader2 className="w-12 h-12 animate-spin text-blue-400 mb-4" />
-            <p className="text-xl text-gray-300">Searching for videos with transcripts...</p>
+            <Loader2 className="w-12 h-12 animate-spin text-blue-600 mb-4" />
+            <p className="text-xl text-gray-700">Searching for videos with transcripts...</p>
           </div>
         )}
 
         {/* Error State */}
         {error && !loading && (
           <div className="max-w-7xl mx-auto">
-            <div className="bg-red-500/20 border border-red-500/50 rounded-lg p-6 text-center">
-              <p className="text-red-300 text-lg">{error}</p>
+            <div className="bg-red-50 border border-red-200 rounded-lg p-6 text-center">
+              <p className="text-red-700 text-lg">{error}</p>
             </div>
           </div>
         )}
@@ -115,8 +115,8 @@ function SearchContent() {
         {!loading && !error && videos.length > 0 && (
           <div className="max-w-7xl mx-auto">
             <div className="mb-4">
-              <p className="text-gray-300">
-                Found <span className="font-bold text-green-400">{videos.length}</span> video{videos.length !== 1 ? 's' : ''} with transcripts
+              <p className="text-gray-700">
+                Found <span className="font-bold text-green-600">{videos.length}</span> video{videos.length !== 1 ? 's' : ''} with transcripts
               </p>
             </div>
 
@@ -124,7 +124,7 @@ function SearchContent() {
               {videos.map((video) => (
                 <div
                   key={video.id}
-                  className="bg-white/10 backdrop-blur-lg rounded-xl border border-white/20 overflow-hidden hover:border-blue-400/50 transition-all"
+                  className="bg-white rounded-2xl border border-gray-200 shadow-lg overflow-hidden hover:border-blue-300 transition-all"
                 >
                   <div className="flex flex-col lg:flex-row gap-6 p-6">
                     {/* Thumbnail */}
@@ -138,15 +138,15 @@ function SearchContent() {
 
                     {/* Content */}
                     <div className="flex-1 flex flex-col min-w-0">
-                      <h3 className="text-xl lg:text-2xl font-bold mb-3 text-white">
+                      <h3 className="text-xl lg:text-2xl font-bold mb-3 text-gray-900">
                         {video.title}
                       </h3>
                       
-                      <p className="text-sm text-gray-400 mb-3">
+                      <p className="text-sm text-gray-600 mb-3">
                         {video.channelTitle} • {formatDate(video.publishedAt)}
                       </p>
                       
-                      <p className="text-gray-300 text-sm lg:text-base mb-6 flex-1 line-clamp-4">
+                      <p className="text-gray-700 text-sm lg:text-base mb-6 flex-1 line-clamp-4">
                         {video.description}
                       </p>
 
@@ -162,7 +162,7 @@ function SearchContent() {
                         
                         <button
                           onClick={() => handleCopyUrl(video.id, video.url)}
-                          className="bg-white/20 hover:bg-white/30 text-white font-semibold py-3 px-4 rounded-lg transition-all flex items-center justify-center gap-2 whitespace-nowrap"
+                          className="bg-gray-100 hover:bg-gray-200 text-gray-900 font-semibold py-3 px-4 rounded-lg transition-all flex items-center justify-center gap-2 whitespace-nowrap"
                         >
                           {copiedId === video.id ? (
                             <>
@@ -181,7 +181,7 @@ function SearchContent() {
                           href={video.url}
                           target="_blank"
                           rel="noopener noreferrer"
-                          className="bg-red-500/80 hover:bg-red-600 text-white font-semibold py-3 px-4 rounded-lg transition-all flex items-center justify-center gap-2 whitespace-nowrap"
+                          className="bg-red-600 hover:bg-red-700 text-white font-semibold py-3 px-4 rounded-lg transition-all flex items-center justify-center gap-2 whitespace-nowrap"
                         >
                           <ExternalLink className="w-5 h-5" />
                           Watch
@@ -202,8 +202,8 @@ function SearchContent() {
 export default function SearchPage() {
   return (
     <Suspense fallback={
-      <div className="min-h-screen bg-gradient-to-br from-slate-900 via-blue-900 to-teal-900 text-white flex items-center justify-center">
-        <Loader2 className="w-12 h-12 animate-spin text-teal-400" />
+      <div className="min-h-screen bg-gradient-to-br from-gray-50 via-blue-50 to-teal-50 text-gray-900 flex items-center justify-center">
+        <Loader2 className="w-12 h-12 animate-spin text-blue-600" />
       </div>
     }>
       <SearchContent />

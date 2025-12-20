@@ -10,7 +10,7 @@ An AI-powered web application that allows users to summarize YouTube videos and 
 - **📝 Video Summarization**: Generate concise summaries of YouTube videos in English or Chinese
 - **💬 Q&A System**: Ask specific questions about video content and get AI-powered answers
 - **🌐 Multi-language Support**: Choose between English and Chinese for summaries
-- **🤖 Multiple AI Models**: Select from various AI models including Amazon Nova Lite, Arcee Trinity Mini, and Kat Coder Pro
+- **🤖 Multiple AI Models**: Select from various AI models including DeepSeek R1 (0528), Arcee Trinity Mini, and Kat Coder Pro
 - **✨ Free to Use**: No credit card or email required
 - **📱 Responsive Design**: Modern, mobile-friendly interface optimized for desktop, tablet, and mobile
 - **☁️ Vercel-Compatible**: Uses LangChain's YoutubeLoader for reliable transcript extraction in serverless environments

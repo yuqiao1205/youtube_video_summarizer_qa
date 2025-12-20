@@ -17,7 +17,7 @@ async function testModels() {
   try {
     const response = await openai.chat.completions.create({
       // model: "openai/gpt-4o-mini",
-      model: "amazon/nova-2-lite-v1:free",
+      model: "mistralai/devstral-2512:free",
       messages: [
         { role: "system", content: "You are a helpful assistant." },
         { role: "user", content: "Explain AI in 2 sentences." }

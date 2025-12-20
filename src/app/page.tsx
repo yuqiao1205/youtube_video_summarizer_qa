@@ -18,13 +18,13 @@ function HomeContent() {
   const [loadingAnswer, setLoadingAnswer] = useState(false);
   const [error, setError] = useState('');
   const [language, setLanguage] = useState('english');
-  const [model, setModel] = useState('amazon/nova-2-lite-v1:free');
+  const [model, setModel] = useState('mistralai/devstral-2512:free');
   const [copied, setCopied] = useState(false);
 
   const modelDisplayNames: { [key: string]: string } = {
-    'amazon/nova-2-lite-v1:free': 'Amazon Nova Lite',
     'arcee-ai/trinity-mini:free': 'Arcee Trinity Mini',
     'kwaipilot/kat-coder-pro:free': 'Kat Coder Pro',
+    'mistralai/devstral-2512:free': 'mistralai/devstral-2512:free',
   };
 
   const handleSummarize = async () => {
@@ -137,9 +137,9 @@ function HomeContent() {
                 onChange={(e) => setModel(e.target.value)}
                 className="flex-1 sm:flex-none bg-white border border-gray-300 rounded-lg text-gray-900 px-3 py-2.5 sm:py-2 text-base sm:text-sm focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent min-h-[44px] sm:min-h-0"
               >
-                <option value="amazon/nova-2-lite-v1:free">Amazon Nova Lite</option>
                 <option value="arcee-ai/trinity-mini:free">Arcee Trinity Mini</option>
                 <option value="kwaipilot/kat-coder-pro:free">Kat Coder Pro</option>
+                <option value="mistralai/devstral-2512:free">mistralai/devstral-2512:free</option>
               </select>
             </div>
           </div>
