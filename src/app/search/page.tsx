@@ -59,22 +59,22 @@ function SearchContent() {
   };
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-slate-900 via-blue-900 to-teal-900 text-white">
+    <div className="min-h-screen bg-gradient-to-br from-gray-50 via-blue-50 to-teal-50 text-gray-900">
       <div className="container mx-auto px-4 py-8">
         {/* Header */}
         <header className="mb-8">
           <div className="flex items-center gap-3 mb-6">
-            <Youtube className="w-10 h-10 text-red-500" />
-            <h1 className="text-3xl font-bold bg-gradient-to-r from-blue-300 to-teal-300 bg-clip-text text-transparent">
+            <Youtube className="w-10 h-10 text-red-600" />
+            <h1 className="text-3xl font-bold text-gray-900">
               Search Results with Transcripts
             </h1>
           </div>
           
           <button
             onClick={() => router.push('/')}
-            className="flex items-center gap-2 px-4 py-2 bg-white/10 hover:bg-white/20 rounded-lg transition-colors"
+            className="flex items-center gap-2 px-4 py-2 bg-gray-100 hover:bg-gray-200 rounded-lg transition-colors"
           >
-            <ArrowLeft className="w-5 h-5" />
+            <ArrowLeft className="w-5 h-5 text-gray-700" />
             Back to Home
           </button>
         </header>
